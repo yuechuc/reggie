@@ -93,9 +93,10 @@ public class EmployeeController {
         return R.success(page1);
     }
 
-    //禁用员工账号功能
+
+    //修改员工信息功+禁用员工账号功能
     @PutMapping
-    public R<String> banAccount(HttpServletRequest request, @RequestBody Employee employee) {
+    public R<String> update(HttpServletRequest request, @RequestBody Employee employee) {
         log.info(employee.toString());
         employee.setUpdateTime(LocalDateTime.now());
         employee.setUpdateUser((Long) request.getSession().getAttribute("employee"));
@@ -103,4 +104,16 @@ public class EmployeeController {
 
         return R.success("员工信息修改成功！");
     }
+
+    //根据id查询员工信息
+    @GetMapping("/{id}")
+    public R<Employee> getById(@PathVariable Long id) {
+        Employee employee = employeeService.getById(id);
+
+        if (employee!=null) {
+            return R.success(employee);
+        }
+        return R.error("没有查询到员工信息!");
+    }
+
 }
