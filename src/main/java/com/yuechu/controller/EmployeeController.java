@@ -67,7 +67,7 @@ public class EmployeeController {
 
     //添加员工
     @PostMapping
-    public R<String> save(HttpServletRequest request,@RequestBody Employee employee) {
+    public R<String> save(HttpServletRequest request, @RequestBody Employee employee) {
 //        初始化密码为‘123456’，并使用md5加密储存
         employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
         employee.setCreateTime(LocalDateTime.now());
@@ -83,16 +83,24 @@ public class EmployeeController {
 
     //员工分页查询
     @GetMapping("/page")
-    public R<Page> page(int page,int pageSize,String name){
-        log.info("page={},pageSize={},name={}",page,pageSize,name);
+    public R<Page> page(int page, int pageSize, String name) {
+        log.info("page={},pageSize={},name={}", page, pageSize, name);
         Page page1 = new Page(page, pageSize);
         LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(!StringUtils.isEmpty(name),Employee::getName,name);
+        queryWrapper.like(!StringUtils.isEmpty(name), Employee::getName, name);
         queryWrapper.orderByDesc(Employee::getUpdateTime);
-        employeeService.page(page1,queryWrapper);
+        employeeService.page(page1, queryWrapper);
         return R.success(page1);
     }
 
+    //禁用员工账号功能
+    @PutMapping
+    public R<String> banAccount(HttpServletRequest request, @RequestBody Employee employee) {
+        log.info(employee.toString());
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser((Long) request.getSession().getAttribute("employee"));
+        employeeService.updateById(employee);
 
-
+        return R.success("员工信息修改成功！");
+    }
 }
