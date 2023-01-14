@@ -70,8 +70,7 @@ public class EmployeeController {
     public R<String> save(HttpServletRequest request, @RequestBody Employee employee) {
 //        初始化密码为‘123456’，并使用md5加密储存
         employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
+
 
         employee.setCreateUser((Long) request.getSession().getAttribute("employee"));
         employee.setUpdateUser((Long) request.getSession().getAttribute("employee"));

@@ -2,6 +2,7 @@ package com.yuechu.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.sun.org.apache.bcel.internal.generic.NEW;
+import com.yuechu.common.BaseContext;
 import com.yuechu.common.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.AntPathMatcher;
@@ -36,7 +37,6 @@ public class LoginCheckFilter implements Filter {
                 "/backend/**",
                 "/front/**"
         };
-
         boolean check = check(urls, requestURI);
 
 
@@ -50,6 +50,11 @@ public class LoginCheckFilter implements Filter {
 //        4. 判断登陆状态，已登陆--》放行
         if (request.getSession().getAttribute("employee") != null) {
             log.info("已登陆，id为：{}",request.getSession().getAttribute("employee"));
+
+            //储存当前登陆用户的id
+            Long empId = (Long) request.getSession().getAttribute("employee");
+            BaseContext.setCurrentId(empId);
+
             filterChain.doFilter(request, response);
             return;
         }
