@@ -6,4 +6,5 @@ import com.yuechu.entity.Employee;
 
 public interface CategoryService extends IService<Category> {
 
+    void remove(Long id);
 }

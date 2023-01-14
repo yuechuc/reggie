@@ -28,11 +28,11 @@ public class CategoryController {
 
     //分页查询
     @GetMapping("/page")
-    public R<IPage> page(int page, int pageSize){
-        IPage<Category> iPage = new Page(page,pageSize);
+    public R<IPage> page(int page, int pageSize) {
+        IPage<Category> iPage = new Page(page, pageSize);
         LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.orderByAsc(Category::getSort);
-        categoryService.page(iPage,queryWrapper);
+        categoryService.page(iPage, queryWrapper);
         return R.success(iPage);
     }
 
@@ -48,11 +48,19 @@ public class CategoryController {
 
     //根据id删除菜品、套餐
     @DeleteMapping
-    public R<String> deleteById(Long ids){
-        log.info("id={}",ids);
-        categoryService.removeById(ids);
+    public R<String> deleteById(Long ids) {
+        log.info("id={}", ids);
+//        categoryService.removeById(ids);
+        categoryService.remove(ids);
         return R.success("delete success!");
     }
 
+
+    //根据id修改菜品、套餐信息
+    @PutMapping
+    public R<String> update(@RequestBody Category category) {
+        categoryService.updateById(category);
+        return R.success("修改成功!");
+    }
 
 }
