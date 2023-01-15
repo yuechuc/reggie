@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -61,6 +62,21 @@ public class CategoryController {
     public R<String> update(@RequestBody Category category) {
         categoryService.updateById(category);
         return R.success("修改成功!");
+      }
+
+
+
+      //根据条件查询菜品分类数据
+    @GetMapping({"/list"})
+    public R<List<Category>> list(Category category){
+
+        LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
+//        添加查找条件
+        queryWrapper.eq(category.getType()!=null,Category::getType,category.getType());
+//        添加排序条件
+        queryWrapper.orderByAsc(Category::getSort).orderByDesc(Category::getUpdateTime);
+        List<Category> list = categoryService.list(queryWrapper);
+        return R.success(list);
     }
 
 }
