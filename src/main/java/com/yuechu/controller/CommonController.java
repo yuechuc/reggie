@@ -65,7 +65,7 @@ public class CommonController {
             ServletOutputStream outputStream = response.getOutputStream();
 
 
-            response.setContentType("image/jepg");
+            response.setContentType("image/jpeg");
 
             int len = 0;
             byte[] bytes = new byte[1024];

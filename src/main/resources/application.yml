@@ -26,4 +26,4 @@ mybatis-plus:
 
 #图片储存路径
 reggie:
-  path: D:\imga\
+  path: D:\image\
