@@ -34,6 +34,8 @@ public class SetmealController {
     @Autowired
     private CategoryService categoryService;
 
+
+    //新增套餐功能
     @PostMapping
     public R<String> save(@RequestBody SetmealDto setmealDto){
         log.info(setmealDto.toString());
@@ -41,6 +43,8 @@ public class SetmealController {
         return R.success("success");
     }
 
+
+    //套餐信息分页查询功能
     @GetMapping("/page")
     public R<Page> page(int page,int pageSize,String name){
 
@@ -53,18 +57,22 @@ public class SetmealController {
         queryWrapper.like(name!=null,Setmeal::getName,name);
         queryWrapper.orderByDesc(Setmeal::getUpdateTime);
 
+        //?????
         setmealService.page(setmealPage,queryWrapper);
 
         List<Setmeal> records = setmealPage.getRecords();
         log.info(records.toString());
 
         List<SetmealDto> list = records.stream().map((item)->{
+            //对象拷贝
             SetmealDto setmealDto = new SetmealDto();
             BeanUtils.copyProperties(item,setmealDto);
-
+            //分类id
             Long categoryId = item.getCategoryId();
+            //根据分类id查询分类对象
             Category category = categoryService.getById(categoryId);
             if (category!=null){
+                //分类名称
                 String categoryName = category.getName();
                 setmealDto.setCategoryName(categoryName);
             }
@@ -75,4 +83,11 @@ public class SetmealController {
         return R.success(setmealDtoPage);
     }
 
+
+    //删除套餐功能
+    @DeleteMapping
+    public R<String> deleteById(@RequestParam List<Long> ids){
+        setmealService.removeWithDish(ids);
+        return R.success("success");
+    }
 }

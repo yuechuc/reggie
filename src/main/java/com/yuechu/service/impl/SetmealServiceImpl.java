@@ -2,6 +2,7 @@ package com.yuechu.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.yuechu.common.CustomException;
 import com.yuechu.dto.SetmealDto;
 import com.yuechu.entity.Category;
 import com.yuechu.entity.Setmeal;
@@ -21,8 +22,8 @@ import java.util.stream.Collectors;
 @Service
 public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> implements SetmealService {
 
-//    @Autowired
-//    private SetmealService setmealService;
+    @Autowired
+    private SetmealService setmealService;
 
     @Autowired
     private SetmealDishService setmealDishService;
@@ -46,5 +47,27 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
 
 //       插入setmeal_dish表
         setmealDishService.saveBatch(setmealDishes);
+    }
+
+//    删除套餐
+    @Override
+    public void removeWithDish(List<Long> ids) {
+//        查询套餐状态，1启用，不可删除
+        LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(Setmeal::getId,ids);
+        queryWrapper.eq(Setmeal::getStatus,1);
+        int count = this.count(queryWrapper);
+
+        if (count > 0 ){
+            //        如果不能删除，抛出异常
+            throw new CustomException("售卖中，不能删除!");
+        }
+
+//        可以删除，先删除套餐表中的数据 setmeal
+        this.removeByIds(ids);
+//        再删除setmealDish表中的鲨鱼夹 setmealDish
+        LambdaQueryWrapper<SetmealDish> wrapper = new LambdaQueryWrapper<>();
+        wrapper.in(SetmealDish::getSetmealId,ids);
+        setmealDishService.removeByIds(ids);
     }
 }
