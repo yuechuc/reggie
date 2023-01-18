@@ -28,7 +28,7 @@ public class AddressBookController {
     /**
      * 新增
      */
-    @PostMapping
+    @PutMapping
     public R<AddressBook> save(@RequestBody AddressBook addressBook) {
         addressBook.setUserId(BaseContext.getCurrentId());
         log.info("addressBook:{}", addressBook);
