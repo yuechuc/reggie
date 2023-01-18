@@ -2,7 +2,6 @@ package com.yuechu.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yuechu.common.R;
 import com.yuechu.dto.UserDto;
 import com.yuechu.entity.User;
@@ -17,12 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
 @Slf4j
-public class UserCoontroller {
+public class UserController {
 
 
     @Autowired

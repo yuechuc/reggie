@@ -10,7 +10,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 @ControllerAdvice(annotations = {RestController.class, Controller.class})
 @ResponseBody
 @Slf4j
-public class GlobalExceptionHandle {
+public class GlobalExceptionHandler {
 
     //处理新增员工异常
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
