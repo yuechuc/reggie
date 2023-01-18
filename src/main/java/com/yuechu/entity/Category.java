@@ -15,13 +15,13 @@ public class Category implements Serializable {
     private Long id;
 
     //类型1 菜品分类  类型2 套餐分类
-    private String type;
+    private Integer type;
 
     //分类名称
     private String name;
 
     //顺序
-    private String sort;
+    private Integer sort;
 
 
 
