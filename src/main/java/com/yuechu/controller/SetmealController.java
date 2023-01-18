@@ -4,11 +4,9 @@ package com.yuechu.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yuechu.common.R;
+import com.yuechu.dto.DishDto;
 import com.yuechu.dto.SetmealDto;
-import com.yuechu.entity.Category;
-import com.yuechu.entity.Dish;
-import com.yuechu.entity.Setmeal;
-import com.yuechu.entity.SetmealDish;
+import com.yuechu.entity.*;
 import com.yuechu.service.CategoryService;
 import com.yuechu.service.SetmealDishService;
 import com.yuechu.service.SetmealService;
@@ -89,5 +87,18 @@ public class SetmealController {
     public R<String> deleteById(@RequestParam List<Long> ids){
         setmealService.removeWithDish(ids);
         return R.success("success");
+    }
+
+
+    //套餐展示
+    @GetMapping("/list")
+    public R<List<Setmeal>> list(Setmeal setmeal) {
+        LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(setmeal.getCategoryId()!=null,Setmeal::getCategoryId, setmeal.getCategoryId());
+        queryWrapper.eq(Setmeal::getStatus, setmeal.getStatus());
+        queryWrapper.orderByDesc(Setmeal::getUpdateTime);
+        List<Setmeal> setmealList = setmealService.list(queryWrapper);
+
+        return R.success(setmealList);
     }
 }
