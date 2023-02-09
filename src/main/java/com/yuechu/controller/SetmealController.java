@@ -15,6 +15,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -82,7 +84,7 @@ public class SetmealController {
     }
 
 
-    //删除套餐功能
+    // 删除套餐功能
     @DeleteMapping
     public R<String> deleteById(@RequestParam List<Long> ids){
         setmealService.removeWithDish(ids);
@@ -101,4 +103,40 @@ public class SetmealController {
 
         return R.success(setmealList);
     }
+
+    //套餐停售、起售
+    @PostMapping("/status/{status}")
+    public R<String> updateSetmealStatus(HttpServletRequest request, @PathVariable int status, String[]  ids) {
+        // employee.setUpdateTime(LocalDateTime.now());
+        for(String id: ids){
+            Setmeal Setmeal = setmealService.getById(id);
+            Setmeal.setStatus(status);
+            Setmeal.setUpdateTime(LocalDateTime.now());
+            Setmeal.setUpdateUser((Long) request.getSession().getAttribute("employee"));
+            setmealService.updateById(Setmeal);
+        }
+
+        return R.success("套菜信息修改成功！");
+    }
+
+    // //删除套餐
+    // @DeleteMapping
+    // public R<String> delete(String[]  ids) {
+    //     // employee.setUpdateTime(LocalDateTime.now());
+    //     int index=0;
+    //     for(String id:ids) {
+    //         Setmeal setmeal = setmealService.getById(id);
+    //         if(setmeal.getStatus()!=1){
+    //             setmealService.removeById(id);
+    //         }else {
+    //             index++;
+    //         }
+    //     }
+    //     if (index>0&&index==ids.length){
+    //         return R.error("选中的套餐均为启售状态，不能删除");
+    //     }else {
+    //         return R.success("删除成功");
+    //     }
+    // }
+
 }

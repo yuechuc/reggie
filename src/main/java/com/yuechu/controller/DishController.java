@@ -8,6 +8,7 @@ import com.yuechu.dto.DishDto;
 import com.yuechu.entity.Category;
 import com.yuechu.entity.Dish;
 import com.yuechu.entity.DishFlavor;
+import com.yuechu.entity.Employee;
 import com.yuechu.service.CategoryService;
 import com.yuechu.service.DishFlavorService;
 import com.yuechu.service.DishService;
@@ -16,7 +17,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.awt.datatransfer.DataFlavor;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -137,6 +140,41 @@ public class DishController {
         }).collect(Collectors.toList());
 
         return R.success(dishDtoList);
+    }
+
+    //菜品停售、起售
+    @PostMapping("/status/{status}")
+    public R<String> updateDishStatus(HttpServletRequest request,@PathVariable int status,String[]  ids) {
+        // employee.setUpdateTime(LocalDateTime.now());
+        for(String id: ids){
+            Dish dish = dishService.getById(id);
+            dish.setStatus(status);
+            dish.setUpdateTime(LocalDateTime.now());
+            dish.setUpdateUser((Long) request.getSession().getAttribute("employee"));
+            dishService.updateById(dish);
+        }
+
+        return R.success("菜品信息修改成功！");
+    }
+
+    //删除菜品
+    @DeleteMapping
+    public R<String> delete(String[]  ids) {
+        // employee.setUpdateTime(LocalDateTime.now());
+        int index=0;
+        for(String id:ids) {
+            Dish dish = dishService.getById(id);
+            if(dish.getStatus()!=1){
+                dishService.removeById(id);
+            }else {
+                index++;
+            }
+        }
+        if (index>0&&index==ids.length){
+            return R.error("选中的菜品均为启售状态，不能删除");
+        }else {
+            return R.success("删除成功");
+        }
     }
 
 
