@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @RestController
@@ -87,4 +88,14 @@ public class UserController {
         }
         return R.error("false");
     }
+
+    //登出功能
+    @PostMapping("/loginout")
+    public R<String> logout(HttpServletRequest request) {
+        //1. 清理Session中保存的员工id
+        request.getSession().removeAttribute("user");
+
+        return R.success("退出成功！");
+    }
+
 }
